@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SHOE HUSTLE - Marketing App</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#111827">
+<style>
+*{box-sizing:border-box;font-family:'Outfit',system-ui}
+body{margin:0;background:#030712;color:#fff}
+.header{background:#111827;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:99;border-bottom:1px solid #1f2937}
+.logo{font-weight:900;font-size:22px}.logo span{color:#f59e0b}
+.btn{padding:13px 16px;border-radius:14px;border:none;font-weight:800;cursor:pointer}
+.btn-primary{background:#f59e0b;color:#000;width:100%}
+.btn-black{background:#1f2937;color:#fff}
+.btn-whatsapp{background:#25D366;color:#fff;width:100%}
+.btn-ghost{background:#1f2937;color:#fff}
+.input{width:100%;padding:13px;background:#1f2937;border:1px solid #374151;border-radius:12px;color:#fff;margin:6px 0}
+.card{background:#111827;border:1px solid #1f2937;border-radius:20px;padding:16px;margin:12px}
+.shoe-card{background:#111827;border:1px solid #1f2937;border-radius:20px;overflow:hidden;margin:12px;position:relative}
+.shoe-card img{width:100%;height:260px;object-fit:cover}
+.price{font-size:24px;font-weight:900;color:#f59e0b}
+.size-badge{padding:6px 12px;background:#1f2937;border-radius:99px;font-size:12px;font-weight:800;margin:3px;display:inline-block;cursor:pointer}
+.size-badge.active{background:#f59e0b;color:#000}
+.tabs{display:flex;gap:6px;background:#1f2937;padding:5px;border-radius:12px}
+.tab{flex:1;padding:10px;text-align:center;border-radius:10px;cursor:pointer;font-weight:700;font-size:13px}
+.tab.active{background:#f59e0b;color:#000}
+.hidden{display:none!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stars{color:#f59e0b}
+.review{background:#030712;padding:10px;border-radius:10px;margin:6px 0;border:1px solid #1f2937}
+.notify{position:fixed;top:70px;right:12px;background:#16a34a;color:#fff;padding:12px 16px;border-radius:12px;z-index:9999;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="logo">SHOE<span>HUSTLE</span> 👟</div>
+<div style="display:flex;gap:6px;align-items:center">
+<span id="userEmail" style="font-size:10px;color:#9ca3af" class="hidden"></span>
+<span id="adminBadge" class="hidden" style="background:#f59e0b;color:#000;padding:4px 8px;border-radius:8px;font-size:10px;font-weight:900">ADMIN - YOU</span>
+<button id="logoutBtn" class="hidden btn-ghost btn" style="padding:8px" onclick="logout()">Logout</button>
+</div>
+</div>
+
+<div id="authPage">
+<div style="padding:30px 20px;text-align:center;background:radial-gradient(600px at 50% 0%,#1f2937,#030712)">
+<h1 style="font-size:38px;font-weight:900;margin:0">SHOE<br><span style="color:#f59e0b">HUSTLE KE</span></h1>
+<p style="color:#9ca3af">Online Shoe Marketing • Booking → WhatsApp 0799163248</p>
+</div>
+<div class="card" style="max-width:440px;margin:-10px auto 20px">
+<div class="tabs"><div id="tL" class="tab active" onclick="setAuth('login')">Login</div><div id="tR" class="tab" onclick="setAuth('reg')">Customer Sign Up</div></div>
+<div id="loginBox" style="margin-top:12px">
+<input id="lEmail" class="input" placeholder="Email" type="email" value="taarifakevaccanthouses001@gmail.com">
+<input id="lPass" class="input" placeholder="Password" type="password" value="Admin2005">
+<button class="btn btn-primary" onclick="doLogin()">Login</button>
+<p id="lMsg" style="color:#f59e0b;text-align:center"></p>
+<p style="font-size:11px;color:#22c55e;text-align:center">Admin: taarifakevaccanthouses001@gmail.com / Admin2005</p>
+</div>
+<div id="regBox" class="hidden" style="margin-top:12px">
+<input id="rEmail" class="input" placeholder="Email" type="email">
+<input id="rPhone" class="input" placeholder="Phone 07...">
+<input id="rPass" class="input" placeholder="Password" type="password">
+<button class="btn" style="background:#fff;color:#000;width:100%" onclick="doReg()">Create Customer Account</button>
+<p id="rMsg" style="color:#f59e0b;text-align:center"></p>
+</div>
+</div>
+</div>
+
+<div id="appPage" class="hidden">
+<div style="padding:12px;position:sticky;top:58px;background:#030712;z-index:8">
+<input id="q" class="input" placeholder="🔍 Search shoe name, size 42..." oninput="render()">
+<div class="grid2" style="margin-top:8px"><button class="btn btn-ghost" onclick="setFilter('All')">All</button><button class="btn btn-ghost" onclick="setFilter('40')">Size 40</button><button class="btn btn-ghost" onclick="setFilter('42')">Size 42</button><button class="btn btn-ghost" onclick="setFilter('44')">Size 44</button></div>
+</div>
+
+<div id="adminUpload" class="card hidden" style="border:2px dashed #f59e0b">
+<h3 style="margin:0;color:#f59e0b">👑 ADMIN - Upload Shoes</h3>
+<input id="sName" class="input" placeholder="Shoe Name e.g. Air Jordan Retro">
+<div class="grid2"><input id="sPrice" class="input" type="number" placeholder="Price KSh"><input id="sStock" class="input" type="number" placeholder="Stock qty"></div>
+<input id="sSizes" class="input" placeholder="Sizes e.g. 40,41,42,43,44">
+<label style="font-size:12px;color:#9ca3af">📸 Upload Shoe Photo:</label>
+<input id="sFile" type="file" accept="image/*" class="input" onchange="previewShoe()">
+<img id="previewImg" class="hidden" style="width:100%;height:180px;object-fit:cover;border-radius:12px;margin-top:8px">
+<input id="sImg" class="input" placeholder="Or paste Image URL">
+<button class="btn btn-primary" onclick="uploadShoe()">📤 Upload Shoe to Shop</button>
+</div>
+
+<div id="adminOrders" class="card hidden" style="border:2px solid #16a34a">
+<h3 style="margin:0;color:#16a34a">🔔 LIVE BOOKINGS - Customers Who Tapped BOOK</h3>
+<div id="ordersList"></div>
+</div>
+
+<div id="shoesGrid"></div>
+</div>
+
+<div id="modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:100;overflow:auto;padding:12px">
+<div class="card" style="max-width:500px;margin:20px auto">
+<button class="btn btn-ghost" style="float:right" onclick="closeModal()">✕ Close</button>
+<div id="modalContent"></div>
+</div>
+</div>
+
+<script>
+const ADMIN_EMAIL="taarifakevaccanthouses001@gmail.com";
+const ADMIN_PASS="Admin2005";
+const MY_WHATSAPP="254799163248"; // Your number 0799163248
+
+let users=JSON.parse(localStorage.getItem('sh_users')||'{}');
+if(!users[ADMIN_EMAIL]){users[ADMIN_EMAIL]={email:ADMIN_EMAIL,pass:ADMIN_PASS,phone:"0799163248",isAdmin:true};localStorage.setItem('sh_users',JSON.stringify(users));}
+let shoes=JSON.parse(localStorage.getItem('sh_shoes')||'null')||[
+{id:1,name:"Nike Air Force 1 White",price:4500,sizes:["40","41","42","43","44"],stock:12,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",owner:ADMIN_EMAIL,views:128,reviews:[{user:"Kevin",rating:5,text:"Clean! Size 42 fits perfect"}]},
+{id:2,name:"Adidas Yeezy 350",price:3800,sizes:["40","42","44"],stock:5,img:"https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800",owner:ADMIN_EMAIL,views:89,reviews:[]},
+{id:3,name:"Air Jordan 4 Retro",price:5500,sizes:["41","42","43"],stock:8,img:"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800",owner:ADMIN_EMAIL,views:201,reviews:[{user:"Brian",rating:4,text:"Original quality"}]}
+];
+let orders=JSON.parse(localStorage.getItem('sh_orders')||'[]');
+let curUser=localStorage.getItem('sh_cur');
+let filter='All';
+let uploadedBase64="";
+
+function save(){localStorage.setItem('sh_users',JSON.stringify(users));localStorage.setItem('sh_shoes',JSON.stringify(shoes));localStorage.setItem('sh_orders',JSON.stringify(orders));}
+function setAuth(t){document.getElementById('loginBox').classList.toggle('hidden',t!=='login');document.getElementById('regBox').classList.toggle('hidden',t!=='reg');document.getElementById('tL').classList.toggle('active',t==='login');document.getElementById('tR').classList.toggle('active',t==='reg')}
+function doReg(){let e=document.getElementById('rEmail').value.trim().toLowerCase();let p=document.getElementById('rPhone').value.trim();let pw=document.getElementById('rPass').value.trim();let m=document.getElementById('rMsg');if(!e.includes('@')){m.innerText='❌ Email';return}if(pw.length<3){m.innerText='❌ Min 3';return}if(users[e]){m.innerText='❌ Exists';return}users[e]={email:e,phone:p,pass:pw,date:Date.now()};save();m.innerText='✅ Created! Login now';setAuth('login');}
+function doLogin(){let e=document.getElementById('lEmail').value.trim().toLowerCase();let pw=document.getElementById('lPass').value.trim();let m=document.getElementById('lMsg');if(!users[e]){m.innerText='❌ No account';return}if(users[e].pass!==pw){m.innerText='❌ Wrong pass';return}localStorage.setItem('sh_cur',e);curUser=e;showApp();}
+function showApp(){document.getElementById('authPage').classList.add('hidden');document.getElementById('appPage').classList.remove('hidden');document.getElementById('userEmail').classList.remove('hidden');document.getElementById('logoutBtn').classList.remove('hidden');document.getElementById('userEmail').innerText=curUser;if(curUser===ADMIN_EMAIL||users[curUser]?.isAdmin){document.getElementById('adminBadge').classList.remove('hidden');document.getElementById('adminUpload').classList.remove('hidden');document.getElementById('adminOrders').classList.remove('hidden');}render();renderOrders();}
+function logout(){localStorage.removeItem('sh_cur');location.reload()}
+function previewShoe(){let f=document.getElementById('sFile').files[0];if(!f)return;let r=new FileReader();r.onload=e=>{uploadedBase64=e.target.result;document.getElementById('previewImg').src=uploadedBase64;document.getElementById('previewImg').classList.remove('hidden')};r.readAsDataURL(f);}
+function uploadShoe(){let name=document.getElementById('sName').value.trim();let price=parseInt(document.getElementById('sPrice').value);let stock=parseInt(document.getElementById('sStock').value)||10;let sizes=document.getElementById('sSizes').value.trim().split(',').map(s=>s.trim()).filter(Boolean);let imgUrl=document.getElementById('sImg').value.trim();let finalImg=uploadedBase64||imgUrl||"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800";if(!name||!price||!sizes.length){alert('Fill name, price, sizes');return}shoes.unshift({id:Date.now(),name,price,sizes,stock,img:finalImg,owner:curUser,views:0,reviews:[]});save();render();document.getElementById('sName').value='';document.getElementById('sPrice').value='';document.getElementById('sStock').value='';document.getElementById('sSizes').value='';document.getElementById('sImg').value='';document.getElementById('sFile').value='';document.getElementById('previewImg').classList.add('hidden');uploadedBase64="";notify('✅ Shoe Uploaded!');}
+function setFilter(f){filter=f;render()}
+function render(){let q=document.getElementById('q').value.toLowerCase();let list=shoes.filter(s=>{let search=!q||s.name.toLowerCase().includes(q)||s.sizes.join(',').includes(q);let sizeFilter=filter==='All'||s.sizes.includes(filter);return search&&sizeFilter;});document.getElementById('shoesGrid').innerHTML=list.map(s=>{let avg=s.reviews.length?(s.reviews.reduce((a,b)=>a+b.rating,0)/s.reviews.length).toFixed(1):'New';let stars='★'.repeat(Math.round(avg))||'☆';return `<div class="shoe-card"><img src="${s.img}" onclick="openShoe(${s.id})"><div style="padding:14px"><h3 style="margin:0">${s.name}</h3><div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0"><span class="price">KSh ${s.price.toLocaleString()}</span><span style="font-size:12px;color:#9ca3af">👁️ ${s.views} views • ${s.stock} left</span></div><div style="margin:6px 0">${s.sizes.map(sz=>`<span class="size-badge">${sz}</span>`).join('')}</div><div style="margin:6px 0"><span class="stars">${stars}</span> <small>${avg} (${s.reviews.length} reviews)</small></div><div class="grid2" style="margin-top:10px"><button class="btn btn-ghost" onclick="openShoe(${s.id})">👁️ View</button><button class="btn btn-primary" onclick="bookShoe(${s.id})">🛒 BOOK NOW</button></div></div></div>`}).join('')||'<div class="card" style="text-align:center;color:#9ca3af">No shoes found</div>';}
+function renderOrders(){if(curUser!==ADMIN_EMAIL)return;document.getElementById('ordersList').innerHTML=orders.slice(0,20).map(o=>`<div class="review" style="border-left:3px solid #16a34a"><b>🔔 NEW BOOKING</b><br><b>${o.shoeName}</b> - KSh ${o.price} - Size ${o.size}<br><small>Customer: ${o.customer} | ${o.phone} | ${new Date(o.time).toLocaleString()}</small><br><a href="https://wa.me/${MY_WHATSAPP}?text=Booking%20confirmed%20for%20${encodeURIComponent(o.shoeName)}" target="_blank"><button class="btn btn-whatsapp" style="padding:6px;margin-top:6px">💬 Reply on WhatsApp</button></a></div>`).join('')||'<p style="color:#9ca3af;font-size:12px">No bookings yet - Share your link!</p>';}
+function openShoe(id){let s=shoes.find(x=>x.id===id);if(!s)return;s.views++;save();let avg=s.reviews.length?(s.reviews.reduce((a,b)=>a+b.rating,0)/s.reviews.length).toFixed(1):'No reviews';let html=`<img src="${s.img}" style="width:100%;height:300px;object-fit:cover;border-radius:16px"><h2>${s.name}</h2><div style="display:flex;justify-content:space-between"><span class="price">KSh ${s.price.toLocaleString()}</span><span style="color:#9ca3af">👁️ ${s.views} views</span></div><p style="color:#9ca3af">Stock: ${s.stock} pairs left</p><div style="margin:12px 0"><b>Select Size:</b><br><div id="sizePick">${s.sizes.map(sz=>`<span class="size-badge" onclick="pickSize(this,'${sz}')" data-size="${sz}">${sz}</span>`).join('')}</div><input type="hidden" id="selectedSize" value="${s.sizes[0]}"></div><button class="btn btn-primary" style="margin:10px 0" onclick="bookShoe(${s.id})">🛒 BOOK NOW - Go to WhatsApp</button><a href="https://wa.me/${MY_WHATSAPP}?text=Hi, interested in ${encodeURIComponent(s.name)} Size ${s.sizes[0]} - KSh ${s.price}" target="_blank" style="text-decoration:none"><button class="btn btn-whatsapp">💬 Chat Direct on WhatsApp 0799163248</button></a><div style="margin-top:20px;border-top:1px solid #1f2937;padding-top:12px"><h3>⭐ Reviews (${s.reviews.length}) - ${avg}</h3><div>${s.reviews.map(r=>`<div class="review"><b>${r.user}</b> <span class="stars">${'★'.repeat(r.rating)}</span><br>${r.text}</div>`).join('')||'<p style="color:#9ca3af">No reviews yet</p>'}</div><select id="revRating" class="input"><option value="5">5 ★ Excellent</option><option value="4">4 ★ Good</option><option value="3">3 ★ Average</option><option value="2">2 ★ Poor</option><option value="1">1 ★ Bad</option></select><input id="revText" class="input" placeholder="Write your review..."><button class="btn btn-primary" onclick="addReview(${s.id})">Post Review</button></div>`;document.getElementById('modalContent').innerHTML=html;document.getElementById('modal').classList.remove('hidden');let first=document.querySelector('#sizePick .size-badge');if(first)first.classList.add('active');}
+function pickSize(el,size){document.querySelectorAll('#sizePick .size-badge').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('selectedSize').value=size;}
+function closeModal(){document.getElementById('modal').classList.add('hidden');render();}
+function addReview(id){let s=shoes.find(x=>x.id===id);let rating=parseInt(document.getElementById('revRating').value);let text=document.getElementById('revText').value.trim();if(!text){alert('Write review');return}if(!curUser){alert('Create account first to review');setAuth('reg');document.getElementById('authPage').classList.remove('hidden');document.getElementById('appPage').classList.add('hidden');closeModal();return}s.reviews.push({user:curUser.split('@')[0],rating,text,date:Date.now()});save();openShoe(id);render();}
+function bookShoe(id){
+  let s=shoes.find(x=>x.id===id);
+  if(!s)return;
+  // If not logged in -> force create account first
+  if(!curUser){
+    if(confirm('🔒 Please create customer account first to book.\n\nTap OK to Sign Up')){
+      setAuth('reg');
+      document.getElementById('authPage').classList.remove('hidden');
+      document.getElementById('appPage').classList.add('hidden');
+      closeModal();
+      notify('Create account to continue booking');
+    }
+    return;
+  }
+  let size=document.getElementById('selectedSize')?.value||s.sizes[0]||'42';
+  // SAVE ORDER FOR ADMIN IMMEDIATELY
+  let order={id:Date.now(),shoeName:s.name,price:s.price,size:size,customer:curUser,phone:users[curUser]?.phone||'No phone',time:Date.now()};
+  orders.unshift(order);
+  save();
+  renderOrders();
+  // NOTIFY ADMIN
+  notify(`🔔 NEW BOOKING! ${s.name} Size ${size} by ${curUser}`);
+  // REDIRECT TO YOUR WHATSAPP DM
+  let msg=`Hi, I want to BOOK:\n\n👟 Shoe: ${s.name}\n💰 Price: KSh ${s.price}\n📏 Size: ${size}\n👤 Customer: ${curUser}\n📱 Phone: ${users[curUser]?.phone||''}\n\nPlease confirm availability!`;
+  let waUrl=`https://wa.me/${MY_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  if(confirm(`✅ BOOKING SAVED!\n\nShoe: ${s.name}\nSize: ${size}\nPrice: KSh ${s.price}\n\nTap OK to go to WhatsApp DM (0799163248) to complete order`)){
+    window.open(waUrl,'_blank');
+  }
+}
+function notify(t){let n=document.createElement('div');n.className='notify';n.innerText=t;document.body.appendChild(n);setTimeout(()=>n.remove(),4000);}
+
+// AUTO LOGIN CHECK
+function checkLogin(){
+  const params=new URLSearchParams(location.search);
+  const auto=params.get('admin');
+  if(auto){let e=auto.trim().toLowerCase();if(users[e]){localStorage.setItem('sh_cur',e);curUser=e;}}
+  if(curUser&&users[curUser])showApp();
+}
+checkLogin();
+</script>
+</body>
+</html>
